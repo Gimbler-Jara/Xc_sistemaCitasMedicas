@@ -11,7 +11,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="SistemaCitasMedicas" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="BYZ-38-t0r" customClass="ViewController" customModule="SistemaCitasMedicas" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -72,6 +72,9 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Iniciar Sesión"/>
+                                <connections>
+                                    <action selector="btnLogin:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7u3-sV-CBk"/>
+                                </connections>
                             </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hospital" translatesAutoresizingMaskIntoConstraints="NO" id="J6E-rQ-Oez">
                                 <rect key="frame" x="69" y="549" width="255" height="235"/>
@@ -85,11 +88,20 @@
                                     <color key="baseForegroundColor" systemColor="tintColor"/>
                                     <color key="baseBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </buttonConfiguration>
+                                <connections>
+                                    <action selector="btnRegistrar:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ey6-HO-3fh"/>
+                                </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="tertiarySystemBackgroundColor"/>
                     </view>
+                    <connections>
+                        <outlet property="txtContrasena" destination="oXN-BD-Vbv" id="Qfx-0d-VNt"/>
+                        <outlet property="txtCorreo" destination="kr0-LE-Ho8" id="1n7-Px-uja"/>
+                        <segue destination="ggX-mz-igj" kind="show" identifier="registro" id="X2f-LO-V7C"/>
+                        <segue destination="cJT-hu-Vnm" kind="show" identifier="home" id="OUh-zw-byp"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
@@ -98,7 +110,7 @@
         <!--Register View Controller-->
         <scene sceneID="CcB-Tv-FCk">
             <objects>
-                <viewController id="ggX-mz-igj" customClass="RegisterViewController" customModule="SistemaCitasMedicas" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="ggX-mz-igj" customClass="RegisterViewController" customModule="SistemaCitasMedicas" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="uvV-qP-CeT">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -182,19 +194,41 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iN8-Cm-dxZ">
-                                <rect key="frame" x="91" y="718" width="210" height="44"/>
+                                <rect key="frame" x="91" y="718" width="210" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Registrar"/>
+                                <connections>
+                                    <action selector="btnRegistrar:" destination="ggX-mz-igj" eventType="touchUpInside" id="DI1-T1-c1S"/>
+                                </connections>
                             </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hospital" translatesAutoresizingMaskIntoConstraints="NO" id="ysE-5n-GMj">
                                 <rect key="frame" x="69" y="118" width="255" height="235"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cBl-PW-gHJ">
+                                <rect key="frame" x="108" y="765" width="177" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="tintColor" systemColor="tertiarySystemBackgroundColor"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Ya tengo cuenta"/>
+                                <connections>
+                                    <action selector="btnLogin:" destination="ggX-mz-igj" eventType="touchUpInside" id="aeE-46-nmf"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="oc4-pU-06y"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
+                    <navigationItem key="navigationItem" id="Fx8-kM-HBK"/>
+                    <connections>
+                        <outlet property="txtApellido" destination="al7-jR-wxM" id="ouG-RI-psF"/>
+                        <outlet property="txtContrasena" destination="is4-mE-EGT" id="ILh-UB-Mij"/>
+                        <outlet property="txtCorreo" destination="efP-DH-Uvb" id="3AO-hI-90H"/>
+                        <outlet property="txtDni" destination="ckb-e9-bro" id="DaJ-Ui-3OF"/>
+                        <outlet property="txtNombre" destination="YWF-oq-GOa" id="m2X-Wd-9DV"/>
+                        <outlet property="txtTelefono" destination="lX8-HA-g2i" id="VqJ-RL-O4C"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="P4c-Df-SkV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -203,33 +237,19 @@
         <!--Home View Controller-->
         <scene sceneID="Qcy-ov-EQl">
             <objects>
-                <viewController id="cJT-hu-Vnm" customClass="HomeViewController" customModule="SistemaCitasMedicas" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="cJT-hu-Vnm" customClass="HomeViewController" customModule="SistemaCitasMedicas" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="bLT-1z-Z1p">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yfo-vZ-tp8">
-                                <rect key="frame" x="16" y="342" width="361" height="72"/>
+                                <rect key="frame" x="16" y="310" width="361" height="72"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Medicos Contigo">
                                         <attributes>
                                             <color key="NSColor" red="0.18410800989808329" green="0.59181268503634388" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                             <font key="NSFont" size="36" name="Arial-BoldMT"/>
-                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                        </attributes>
-                                    </fragment>
-                                </attributedString>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jZY-tR-qti">
-                                <rect key="frame" x="16" y="390" width="361" height="72"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <attributedString key="attributedText">
-                                    <fragment content="Reservar cita">
-                                        <attributes>
-                                            <color key="NSColor" red="1" green="0.035151150188609148" blue="0.11002024914446711" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                            <font key="NSFont" size="28" name="MicrosoftSansSerif"/>
                                             <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                         </attributes>
                                     </fragment>
@@ -244,7 +264,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hospital" translatesAutoresizingMaskIntoConstraints="NO" id="dOO-fK-dDX">
-                                <rect key="frame" x="69" y="131" width="255" height="235"/>
+                                <rect key="frame" x="69" y="99" width="255" height="235"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="73S-gV-D8V">
@@ -253,20 +273,41 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Cerrar Sesión"/>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xaQ-W2-sde">
+                                <rect key="frame" x="199" y="390" width="178" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Ver citas reservadas"/>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NA5-dq-tvt">
                                 <rect key="frame" x="69" y="740" width="255" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Confirmar Reserva"/>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jZY-tR-qti">
+                                <rect key="frame" x="73" y="442" width="246" height="72"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="Reservar cita">
+                                        <attributes>
+                                            <color key="NSColor" red="1" green="0.035151150188609148" blue="0.11002024914446711" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                            <font key="NSFont" size="28" name="MicrosoftSansSerif"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="hye-LZ-KMj"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
+                    <navigationItem key="navigationItem" id="SsH-qM-PeK"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Iy5-5Q-PKj" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-480" y="679"/>
+            <point key="canvasLocation" x="-480" y="797"/>
         </scene>
         <!--Citas View Controller-->
         <scene sceneID="hYV-ta-IMb">
@@ -281,7 +322,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="205" id="2il-Lf-0mc">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="citasfila" rowHeight="205" id="2il-Lf-0mc" customClass="CitasViewCell" customModule="SistemaCitasMedicas" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="50" width="361" height="205"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="2il-Lf-0mc" id="F4L-RA-J8t">
@@ -369,6 +410,12 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="lblEspecialidad" destination="fk8-Ft-kpV" id="GQH-46-wum"/>
+                                            <outlet property="lblFecha" destination="wKa-Lr-XWQ" id="6Ib-jc-L9O"/>
+                                            <outlet property="lblHora" destination="rjP-go-uvx" id="cMg-aJ-A67"/>
+                                            <outlet property="lblMedico" destination="Wch-L7-fFC" id="hur-SA-AfQ"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
@@ -382,7 +429,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ogr-ow-4jC">
-                                <rect key="frame" x="16" y="99" width="200" height="72"/>
+                                <rect key="frame" x="2" y="84" width="183" height="72"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Mis Citas">
@@ -405,7 +452,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FBZ-tI-JUR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="351.90839694656489" y="678.87323943661977"/>
+            <point key="canvasLocation" x="352" y="796"/>
         </scene>
     </scenes>
     <resources>
