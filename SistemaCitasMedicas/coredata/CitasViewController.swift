@@ -3,35 +3,75 @@
 //  SistemaCitasMedicas
 //
 //  Created by Emerson Jara Gamarra on 13/08/25.
-//
+//UITableViewDataSource
 
 import UIKit
 
-class CitasViewController: UIViewController,UITableViewDataSource {
-   
-    
-
+class CitasViewController: UIViewController,UITableViewDataSource, UITableViewDelegate {
     
     @IBOutlet weak var tvPaciente: UITableView!
     
-    
+    private var citas: [CitaDTO] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+        tvPaciente.dataSource = self
+        tvPaciente.delegate = self
+        
+        tvPaciente.rowHeight = UITableView.automaticDimension
+        tvPaciente.rowHeight = 200
+        
+        cargarCitas()
     }
-   
     
-    @IBAction func btnRegresar(_ sender: UIButton) {
+    private func cargarCitas() {
+        guard let paciente = Session.shared.paciente else {
+            return alert("Debes iniciar sesión")
+        }
+        APIClientUIKit.shared.misCitas(pacienteId: paciente.id) { [weak self] res in
+            guard let self = self else { return }
+            switch res {
+            case .success(let list):
+                self.citas = list
+                self.tvPaciente.reloadData()
+            case .failure(let e):
+                self.alert(self.message(from: e))
+            }
+        }
     }
     
-
+    // MARK: - UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        <#code#>
+        citas.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        <#code#>
+        let cell = tableView.dequeueReusableCell(withIdentifier: "citasfila", for: indexPath) as! CitasViewCell
+        let c = citas[indexPath.row]
+        cell.lblEspecialidad.text = c.especialidad
+        cell.lblMedico.text = c.doctorNombre
+        cell.lblFecha.text = formatearFecha(c.fecha)
+        cell.lblHora.text = c.hora
+        return cell
     }
+    
+    // (Opcional) estilo de selección
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    
+    private func formatearFecha(_ iso: String) -> String {
+        let inF = DateFormatter(); inF.dateFormat = "yyyy-MM-dd"; inF.locale = .init(identifier: "en_US_POSIX")
+        let outF = DateFormatter(); outF.dateFormat = "dd-MM-yy"; outF.locale = .current
+        if let d = inF.date(from: iso) { return outF.string(from: d) }
+        return iso
+    }
+    
+    
+    @IBAction func btnRegresar(_ sender: UIButton) {
+        dismiss(animated: true)
+    }
+    
 }
