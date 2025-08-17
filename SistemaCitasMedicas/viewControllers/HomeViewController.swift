@@ -32,6 +32,9 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         performSegue(withIdentifier: "login", sender: self)
     }
     
+    
+    
+    
     private func fetchEspecialidades() {
         let req = NSFetchRequest<EspecialidadLocal>(entityName: "EspecialidadLocal")
         req.sortDescriptors = [NSSortDescriptor(key: "orden", ascending: true)]

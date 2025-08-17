@@ -18,6 +18,11 @@ class ViewController: UIViewController {
     }
     
     
+    @IBAction func btnBack(_ sender: UIButton) {
+        dismiss(animated: true)
+    }
+    
+    
     @IBAction func btnLogin(_ sender: UIButton) {
         let email = (txtCorreo.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         let pass  = (txtContrasena.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
