@@ -20,7 +20,7 @@ class CitasViewController: UIViewController,UITableViewDataSource, UITableViewDe
         tvPaciente.delegate = self
         
         tvPaciente.rowHeight = UITableView.automaticDimension
-        tvPaciente.rowHeight = 200
+        tvPaciente.rowHeight = 130
         
         cargarCitas()
     }

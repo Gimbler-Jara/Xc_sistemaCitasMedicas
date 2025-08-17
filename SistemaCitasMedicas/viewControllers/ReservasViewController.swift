@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HomeViewController: UIViewController , UIPickerViewDataSource, UIPickerViewDelegate {
+class ReservasViewController: UIViewController , UIPickerViewDataSource, UIPickerViewDelegate {
     
     @IBOutlet weak var txtEspecialidad: UITextField!
     @IBOutlet weak var txtMedico: UITextField!
