@@ -1,15 +1,12 @@
-//
-//  Session.swift
-//  SistemaCitasMedicas
-//
-//  Created by Emerson Jara Gamarra on 13/08/25.
-//
+
 
 import UIKit
 
-final class Session: NSObject {
+final class Session {
     static let shared = Session()
-       var paciente: PacienteDTO?
-       var token: String?
-       var emailLogin: String?
+    private init() {}
+    
+    var paciente: PacienteDTO?
+    var token: String?
+    var emailLogin: String?
 }

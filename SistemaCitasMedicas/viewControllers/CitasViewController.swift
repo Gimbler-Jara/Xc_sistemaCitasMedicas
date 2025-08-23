@@ -1,9 +1,4 @@
-//
-//  CitasViewController.swift
-//  SistemaCitasMedicas
-//
-//  Created by Emerson Jara Gamarra on 13/08/25.
-//UITableViewDataSource
+
 
 import UIKit
 
@@ -19,17 +14,19 @@ class CitasViewController: UIViewController,UITableViewDataSource, UITableViewDe
         tvPaciente.dataSource = self
         tvPaciente.delegate = self
         
-        tvPaciente.rowHeight = UITableView.automaticDimension
         tvPaciente.rowHeight = 130
         
         cargarCitas()
     }
     
     private func cargarCitas() {
+        
         guard let paciente = Session.shared.paciente else {
             return alert("Debes iniciar sesión")
         }
-        APIClientUIKit.shared.misCitas(pacienteId: paciente.id) { [weak self] res in
+        
+        APIClientUIKit.shared.misCitas(pacienteId: paciente.id) {
+            [weak self] res in
             guard let self = self else { return }
             switch res {
             case .success(let list):
@@ -56,15 +53,19 @@ class CitasViewController: UIViewController,UITableViewDataSource, UITableViewDe
         return cell
     }
     
-    // (Opcional) estilo de selección
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
     
     private func formatearFecha(_ iso: String) -> String {
-        let inF = DateFormatter(); inF.dateFormat = "yyyy-MM-dd"; inF.locale = .init(identifier: "en_US_POSIX")
-        let outF = DateFormatter(); outF.dateFormat = "dd-MM-yy"; outF.locale = .current
+        let inF = DateFormatter();
+        inF.dateFormat = "yyyy-MM-dd";
+        inF.locale = .init(identifier: "en_US_POSIX")
+        
+        let outF = DateFormatter();
+        outF.dateFormat = "dd-MM-yy";
+        outF.locale = .current
         if let d = inF.date(from: iso) { return outF.string(from: d) }
         return iso
     }

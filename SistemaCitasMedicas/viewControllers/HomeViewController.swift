@@ -1,9 +1,4 @@
-//
-//  HomeViewController.swift
-//  SistemaCitasMedicas
-//
-//  Created by Emerson Jara Gamarra on 17/08/25.
-//
+
 
 import UIKit
 import CoreData
@@ -26,14 +21,9 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         fetchEspecialidades()
     }
     
-    
-    
     @IBAction func btnLogin(_ sender: UIButton) {
         performSegue(withIdentifier: "login", sender: self)
     }
-    
-    
-    
     
     private func fetchEspecialidades() {
         let req = NSFetchRequest<EspecialidadLocal>(entityName: "EspecialidadLocal")
@@ -57,6 +47,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         
         let e = items[indexPath.item]
         cell.titleLbl.text = e.nombre
+        
         if let name = e.assetName, !name.isEmpty {
             cell.imageView.image = UIImage(named: name) ?? UIImage(systemName: "photo")
         } else {

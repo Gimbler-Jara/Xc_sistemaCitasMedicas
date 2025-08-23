@@ -1,9 +1,4 @@
-//
-//  HomeViewController.swift
-//  SistemaCitasMedicas
-//
-//  Created by Emerson Jara Gamarra on 13/08/25.
-//
+
 
 import UIKit
 
@@ -43,11 +38,19 @@ class ReservasViewController: UIViewController , UIPickerViewDataSource, UIPicke
         Session.shared.paciente = nil
         Session.shared.emailLogin = nil
         
-        // 2) (Opcional) limpiar persistencia si guardaste algo
+        //limpiar persistencia
         UserDefaults.standard.removeObject(forKey: "token")
         UserDefaults.standard.removeObject(forKey: "emailLogin")
         
         dismiss(animated: true)
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let tz = datePicker.timeZone ?? .current
+        datePicker.minimumDate = startOfTomorrow(timeZone: tz)
+        if let min = datePicker.minimumDate, datePicker.date < min { datePicker.date = min }
     }
     
     
@@ -56,8 +59,6 @@ class ReservasViewController: UIViewController , UIPickerViewDataSource, UIPicke
     }
     
     
-    
-    // MARK: - Configuración de pickers
     private func configurePickers() {
         // Delegados
         [especialidadPicker, medicoPicker, horarioPicker].forEach { picker in
@@ -65,23 +66,27 @@ class ReservasViewController: UIViewController , UIPickerViewDataSource, UIPicke
             picker.delegate = self
         }
         
-        // TextField inputViews
         txtEspecialidad.inputView = especialidadPicker
         txtMedico.inputView = medicoPicker
         txtHorario.inputView = horarioPicker
-        
-        // DatePicker para fecha
-        datePicker.datePickerMode = .date
-        if #available(iOS 13.4, *) { datePicker.preferredDatePickerStyle = .wheels }
         txtFecha.inputView = datePicker
         
-        // Toolbars
         txtEspecialidad.inputAccessoryView = makeToolbar(done: #selector(doneEspecialidad), cancel: #selector(cancelInput))
         txtMedico.inputAccessoryView       = makeToolbar(done: #selector(doneMedico),       cancel: #selector(cancelInput))
         txtHorario.inputAccessoryView      = makeToolbar(done: #selector(doneHorario),      cancel: #selector(cancelInput))
         txtFecha.inputAccessoryView        = makeToolbar(done: #selector(doneFecha),        cancel: #selector(cancelInput))
         
-        // Cambio de fecha en vivo
+        datePicker.datePickerMode = .date
+        if #available(iOS 13.4, *) { datePicker.preferredDatePickerStyle = .wheels }
+
+        datePicker.timeZone = .current
+        let tz = datePicker.timeZone ?? .current
+        datePicker.minimumDate = startOfTomorrow(timeZone: tz)
+        
+        if let min = datePicker.minimumDate {
+            datePicker.date = min
+        }
+
         datePicker.addTarget(self, action: #selector(onDateChanged), for: .valueChanged)
     }
     
@@ -124,7 +129,11 @@ class ReservasViewController: UIViewController , UIPickerViewDataSource, UIPicke
     }
     
     private func loadSlotsIfPossible() {
-        guard let doc = selectedDoctor, let fecha = selectedFecha else { return }
+        guard
+            let doc = selectedDoctor,
+            let fecha = selectedFecha
+        else { return }
+        
         APIClientUIKit.shared.slots(doctorId: doc.id, fecha: fecha) { [weak self] res in
             guard let self = self else { return }
             switch res {
@@ -159,7 +168,9 @@ class ReservasViewController: UIViewController , UIPickerViewDataSource, UIPicke
     }
     
     @objc private func doneFecha() {
-        let f = DateFormatter(); f.dateFormat = "yyyy-MM-dd"; f.locale = .init(identifier: "en_US_POSIX")
+        let f = DateFormatter();
+        f.dateFormat = "yyyy-MM-dd";
+        f.locale = .init(identifier: "en_US_POSIX")
         selectedFecha = f.string(from: datePicker.date)
         txtFecha.text = selectedFecha
         view.endEditing(true)
@@ -176,8 +187,11 @@ class ReservasViewController: UIViewController , UIPickerViewDataSource, UIPicke
     }
     
     @objc private func onDateChanged() {
-        // opcional: si quieres ver en tiempo real en el textfield
-        let f = DateFormatter(); f.dateFormat = "yyyy-MM-dd"; f.locale = .init(identifier: "en_US_POSIX")
+        // ver en tiempo real en el textfield
+        let f = DateFormatter();
+        f.dateFormat = "yyyy-MM-dd";
+        f.locale = .init(identifier: "en_US_POSIX")
+        f.timeZone = datePicker.timeZone ?? .current
         txtFecha.text = f.string(from: datePicker.date)
     }
     
@@ -201,8 +215,14 @@ class ReservasViewController: UIViewController , UIPickerViewDataSource, UIPicke
         guard let fecha = selectedFecha else { return alert("Selecciona una fecha") }
         guard let slot = selectedSlot else { return alert("Selecciona un horario") }
         
+        if let min = datePicker.minimumDate, datePicker.date < min {
+            return alert("La fecha debe ser a partir de mañana.")
+        }
+        
         sender.isEnabled = false
+        
         let payload = CitaRequestDTO(pacienteId: paciente.id, doctorId: doctor.id, fecha: fecha, slotId: slot.id)
+        
         APIClientUIKit.shared.reservar(payload) { [weak self] res in
             guard let self = self else { return }
             sender.isEnabled = true
@@ -226,5 +246,14 @@ class ReservasViewController: UIViewController , UIPickerViewDataSource, UIPicke
             case .failure(let e): self.alert(self.message(from: e))
             }
         }
+    }
+    
+    private func startOfTomorrow(timeZone: TimeZone = .current) -> Date {
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = timeZone
+        let now = Date()
+        let startOfToday = cal.startOfDay(for: now)
+        // Suma 1 día al inicio del día actual → mañana 00:00
+        return cal.date(byAdding: .day, value: 1, to: startOfToday)!
     }
 }

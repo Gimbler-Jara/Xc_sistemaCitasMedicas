@@ -1,17 +1,14 @@
-//
-//  EspecialidadSeeder.swift
-//  SistemaCitasMedicas
-//
-//  Created by Emerson Jara Gamarra on 17/08/25.
-//
+
 
 import CoreData
 
 struct EspecialidadSeeder {
     static func seedIfNeeded() {
+        
         let ctx = CoreDataStack.shared.viewContext
         let req = NSFetchRequest<NSFetchRequestResult>(entityName: "EspecialidadLocal")
         req.fetchLimit = 1
+        
         if let count = try? ctx.count(for: req), count > 0 {
             return
         }

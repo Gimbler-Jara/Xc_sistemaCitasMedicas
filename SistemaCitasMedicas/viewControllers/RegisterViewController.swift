@@ -1,9 +1,4 @@
-//
-//  RegisterViewController.swift
-//  SistemaCitasMedicas
-//
-//  Created by Emerson Jara Gamarra on 13/08/25.
-//
+
 
 import UIKit
 
@@ -31,26 +26,17 @@ class RegisterViewController: UIViewController {
             !dni.isEmpty, !nom.isEmpty, !ape.isEmpty, !email.isEmpty, !pass.isEmpty else {
             return alert("Completa todos los campos obligatorios")
         }
+        
         let req = RegistroRequestDTO(dni: dni, nombre: nom, apellido: ape, email: email, telefono: tel, password: pass, fotoUrl : nil)
+        
         APIClientUIKit.shared.register(req) { res in
             switch res {
             case .success(_):
-                // Autologin
-                APIClientUIKit.shared.login(.init(email: email, password: pass)) { r in
-                    switch r {
-                    case .success(let auth):
-                        Session.shared.token = auth.token
-                        Session.shared.paciente = auth.paciente
-                        Session.shared.emailLogin = email
-                        
-                        //sacar un mensaje de exito y limpiar los campos
-                        self.showSuccessThen {
-                            self.clearForm()
-                            self.dismiss(animated: true)
-                        }
-                    case .failure(let e):
-                        self.alert(self.message(from: e))
-                    }
+                
+                self.showSuccessThen {
+                    self.clearForm()
+                    self.dismiss(animated: true)
+                    
                 }
             case .failure(let e):
                 self.alert(self.message(from: e))
@@ -65,9 +51,7 @@ class RegisterViewController: UIViewController {
     }
     
     private func showSuccessThen(_ action: @escaping () -> Void) {
-        let ac = UIAlertController(title: "Éxito",
-                                   message: "Registro completado",
-                                   preferredStyle: .alert)
+        let ac = UIAlertController(title: "Éxito",message: "Registro completado",preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "OK", style: .default) { _ in action() })
         present(ac, animated: true)
     }

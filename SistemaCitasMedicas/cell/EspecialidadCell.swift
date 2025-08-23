@@ -1,9 +1,4 @@
-//
-//  EspecialidadCell.swift
-//  SistemaCitasMedicas
-//
-//  Created by Emerson Jara Gamarra on 17/08/25.
-//
+
 
 import UIKit
 
