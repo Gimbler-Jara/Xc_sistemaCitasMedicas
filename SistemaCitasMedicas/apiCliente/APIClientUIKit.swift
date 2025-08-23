@@ -1,6 +1,7 @@
 
 
 import UIKit
+import Alamofire
 
 final class APIClientUIKit {
     static let shared = APIClientUIKit()
@@ -8,130 +9,125 @@ final class APIClientUIKit {
     
     var baseURL = URL(string: "http://localhost:8080/api")!
     
-    // GET/DELETE sin body
-    private func buildRequest(path: String,method: String = "GET") throws -> URLRequest {
-        let url = baseURL.appending(path: path)
-        var req = URLRequest(url: url)
-        req.httpMethod = method
-        req.setValue("application/json", forHTTPHeaderField: "Accept")
-        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        return req
-    }
-    
-    // POST/PUT/PATCH con body (genérico)
-    private func buildRequest<T: Encodable>(path: String,method: String,body: T) throws -> URLRequest {
-        let url = baseURL.appending(path: path)
-        var req = URLRequest(url: url)
-        req.httpMethod = method
-        req.setValue("application/json", forHTTPHeaderField: "Accept")
-        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let data = try JSONEncoder().encode(body)
-        req.httpBody = data
+    private func handleResponse<T: Decodable>(
+        _ response: AFDataResponse<Data>,
+        completion: @escaping (Result<T, Error>) -> Void
+    ) {
+        if let err = response.error, response.response == nil {
+            return completion(.failure(err))
+        }
         
-        return req
-    }
-    
-    
-    
-    private func run<T: Decodable>(_ req: URLRequest, completion: @escaping (Result<T, Error>) -> Void) {
+        guard let data = response.data,
+              let status = response.response?.statusCode else {
+            return completion(.failure(URLError(.badServerResponse)))
+        }
         
-        URLSession.shared.dataTask(with: req) { data, resp, err in
-            
-            if let err = err {
-                return DispatchQueue.main.async {
-                    completion(.failure(err))
-                }
-            }
-            
-            guard let http = resp as? HTTPURLResponse, let data = data else {
-                return DispatchQueue.main.async {
+        do {
+            if (200..<300).contains(status) {
+                let obj = try JSONDecoder().decode(T.self, from: data)
+                completion(.success(obj))
+            } else {
+                if let apiErr = try? JSONDecoder().decode(ApiErrorDTO.self, from: data) {
+                    completion(.failure(apiErr))
+                } else {
                     completion(.failure(URLError(.badServerResponse)))
                 }
             }
-            
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            
-            if (200..<300).contains(http.statusCode) {
-                do { let obj = try decoder.decode(T.self, from: data)
-                    DispatchQueue.main.async { completion(.success(obj)) }
-                }catch {
-                    DispatchQueue.main.async { completion(.failure(error)) }
-                }
-            } else {
-                if let apiErr = try? decoder.decode(ApiErrorDTO.self, from: data) {
-                    DispatchQueue.main.async { completion(.failure(apiErr)) }
-                } else {
-                    DispatchQueue.main.async { completion(.failure(URLError(.badServerResponse))) }
-                }
-            }
-        }.resume()
+        } catch {
+            completion(.failure(error))
+        }
     }
     
     
-    // MARK: Endpoints
     func register(_ payload: RegistroRequestDTO, completion: @escaping (Result<PacienteDTO, Error>) -> Void) {
-        do {
-            let req = try buildRequest(path: "/auth/register", method: "POST", body: payload);
-            run(req, completion: completion)
-        }catch { completion(.failure(error)) }
+        let url = "\(baseURL)/auth/register"
+        AF.request(url,method: .post,parameters: payload,encoder: JSONParameterEncoder.default,headers: ["Accept": "application/json"])
+            .validate(statusCode: 200..<600)
+            .responseData { [weak self] resp in
+                self?.handleResponse(resp, completion: completion)
+            }
     }
+    
     
     func login(_ payload: LoginRequestDTO, completion: @escaping (Result<AuthResponseDTO, Error>) -> Void) {
-        do {
-            let req = try buildRequest(path: "/auth/login", method: "POST", body: payload)
-            run(req, completion: completion)
-        } catch { completion(.failure(error)) }
+        let url = "\(baseURL)/auth/login"
+        AF.request(url, method: .post,parameters: payload,encoder: JSONParameterEncoder.default,headers: ["Accept": "application/json"])
+            .validate(statusCode: 200..<600)
+            .responseData { [weak self] resp in
+                self?.handleResponse(resp, completion: completion)
+            }
     }
     
-    
-    // Para backend sin JWT real: /pacientes/me?email=...
     func me(email: String, completion: @escaping (Result<PacienteDTO, Error>) -> Void) {
-        let url = baseURL.appending(path: "/pacientes/me").appending(queryItems: [.init(name: "email", value: email)])
-        var req = URLRequest(url: url)
-        req.httpMethod = "GET"
-        req.setValue("application/json", forHTTPHeaderField: "Accept")
-        run(req, completion: completion)
+        let url = "\(baseURL)/pacientes/me"
+        let params: Parameters = ["email": email]
+        AF.request(url,method: .get,parameters: params,encoding: URLEncoding.default,headers: ["Accept": "application/json"])
+            .validate(statusCode: 200..<600)
+            .responseData { [weak self] resp in
+                self?.handleResponse(resp, completion: completion)
+            }
     }
     
-    // GET /especialidades
     func especialidades(completion: @escaping (Result<[EspecialidadDTO], Error>) -> Void) {
-        do {
-            let req = try buildRequest(path: "/especialidades");
-            run(req, completion: completion) }
-        catch { completion(.failure(error)) }
+        let url = "\(baseURL)/especialidades"
+        AF.request(url,method: .get,headers: ["Accept": "application/json"])
+            .validate(statusCode: 200..<600)
+            .responseData { [weak self] resp in
+                self?.handleResponse(resp, completion: completion)
+            }
     }
     
-    // GET /doctores?especialidadId=...
     func doctores(especialidadId: Int, completion: @escaping (Result<[DoctorDTO], Error>) -> Void) {
-        let url = baseURL.appending(path: "/doctores").appending(queryItems: [.init(name: "especialidadId", value: String(especialidadId))])
-        var req = URLRequest(url: url);
-        req.httpMethod = "GET";
-        req.setValue("application/json", forHTTPHeaderField: "Accept")
-        run(req, completion: completion)
+        let url = "\(baseURL)/doctores"
+        let params: Parameters = ["especialidadId": especialidadId]
+        AF.request(url,method: .get,parameters: params,encoding: URLEncoding.default,headers: ["Accept": "application/json"])
+            .validate(statusCode: 200..<600)
+            .responseData { [weak self] resp in
+                self?.handleResponse(resp, completion: completion)
+            }
     }
     
-    // GET /doctores/{id}/slots?fecha=...
     func slots(doctorId: Int, fecha: String, completion: @escaping (Result<[SlotDTO], Error>) -> Void) {
-        let path = "/doctores/\(doctorId)/slots"
-        let url = baseURL.appending(path: path).appending(queryItems: [.init(name: "fecha", value: fecha)])
-        var req = URLRequest(url: url);
-        req.httpMethod = "GET";
-        req.setValue("application/json", forHTTPHeaderField: "Accept")
-        run(req, completion: completion)
+        let url = "\(baseURL)/doctores/\(doctorId)/slots"
+        let params: Parameters = ["fecha": fecha]
+        AF.request(url,method: .get,parameters: params,encoding: URLEncoding.default,headers: ["Accept": "application/json"])
+            .validate(statusCode: 200..<600)
+            .responseData { [weak self] resp in
+                self?.handleResponse(resp, completion: completion)
+            }
     }
     
-    // POST /citas
     func reservar(_ payload: CitaRequestDTO, completion: @escaping (Result<CitaDTO, Error>) -> Void) {
-        do {
-            let req = try buildRequest(path: "/citas", method: "POST", body: payload);
-            run(req, completion: completion)
-        }catch { completion(.failure(error)) }
+        let url = "\(baseURL)/citas"
+        AF.request(url,method: .post,parameters: payload,encoder: JSONParameterEncoder.default,headers: ["Accept": "application/json"])
+            .validate(statusCode: 200..<600)
+            .responseData { [weak self] resp in
+                self?.handleResponse(resp, completion: completion)
+            }
     }
     
     func misCitas(pacienteId: Int, completion: @escaping (Result<[CitaDTO], Error>) -> Void) {
-        let url = baseURL.appending(path: "/citas/mias").appending(queryItems: [.init(name: "pacienteId", value: String(pacienteId))])
-        var req = URLRequest(url: url); req.httpMethod = "GET"; req.setValue("application/json", forHTTPHeaderField: "Accept")
-        run(req, completion: completion)
+        let url = "\(baseURL)/citas/mias"
+        let params: Parameters = ["pacienteId": pacienteId]
+        AF.request(url,method: .get,parameters: params,encoding: URLEncoding.default,headers: ["Accept": "application/json"])
+            .validate(statusCode: 200..<600)
+            .responseData { [weak self] resp in
+                self?.handleResponse(resp, completion: completion)
+            }
+    }
+    
+    func cancelar(citaId: Int, completion: @escaping (Result<CitaDTO, Error>) -> Void) {
+        let url = "\(baseURL)/citas/\(citaId)/cancelar"
+        AF.request(url,method: .patch,headers: ["Accept": "application/json"])
+            .validate(statusCode: 200..<600)
+            .responseDecodable(of: CitaDTO.self) { [weak self] resp in
+                guard self != nil else { return }
+                switch resp.result {
+                case .success(let dto):
+                    completion(.success(dto))
+                case .failure(let err):
+                    completion(.failure(err))
+                }
+            }
     }
 }

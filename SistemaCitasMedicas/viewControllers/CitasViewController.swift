@@ -7,16 +7,21 @@ class CitasViewController: UIViewController,UITableViewDataSource, UITableViewDe
     @IBOutlet weak var tvPaciente: UITableView!
     
     private var citas: [CitaDTO] = []
+    private var infoMostrada = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         tvPaciente.dataSource = self
         tvPaciente.delegate = self
         
         tvPaciente.rowHeight = 130
         
         cargarCitas()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        mostrarMensajeSiCorresponde()
     }
     
     private func cargarCitas() {
@@ -30,6 +35,7 @@ class CitasViewController: UIViewController,UITableViewDataSource, UITableViewDe
             guard let self = self else { return }
             switch res {
             case .success(let list):
+                print(list)
                 self.citas = list
                 self.tvPaciente.reloadData()
             case .failure(let e):
@@ -55,6 +61,7 @@ class CitasViewController: UIViewController,UITableViewDataSource, UITableViewDe
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        confirmarCancelacion(at: indexPath)
     }
     
     
@@ -74,5 +81,51 @@ class CitasViewController: UIViewController,UITableViewDataSource, UITableViewDe
     @IBAction func btnRegresar(_ sender: UIButton) {
         dismiss(animated: true)
     }
+    
+    private func confirmarCancelacion(at indexPath: IndexPath) {
+        let c = citas[indexPath.row]
+        let titulo = "Cancelar cita"
+        let mensaje = "¿Seguro que deseas cancelar la cita con \(c.doctorNombre) el \(formatearFecha(c.fecha)) a las \(c.hora)?"
+        
+        let ac = UIAlertController(title: titulo, message: mensaje, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+        ac.addAction(UIAlertAction(title: "Sí, cancelar", style: .destructive, handler: { [weak self] _ in
+            self?.cancelarCita(at: indexPath)
+        }))
+        present(ac, animated: true)
+    }
+    
+    private func mostrarMensajeSiCorresponde() {
+        guard !infoMostrada else { return }
+        infoMostrada = true
+        
+        let ac = UIAlertController(
+            title: "Sistemas",
+            message: "Para cancelar una cita, selecciona la fila correspondiente.",
+            preferredStyle: .alert
+        )
+        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil)) // .default en lugar de .destructive
+        present(ac, animated: true)
+    }
+    
+    private func cancelarCita(at indexPath: IndexPath) {
+        let cita = citas[indexPath.row]
+        
+        APIClientUIKit.shared.cancelar(citaId: Int(cita.id)) { [weak self] result in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    self.citas.remove(at: indexPath.row)
+                    self.tvPaciente.deleteRows(at: [indexPath], with: .automatic)
+                    self.alert("Cita cancelada correctamente ✅")
+                case .failure(let e):
+                    self.alert(self.message(from: e))
+                }
+            }
+        }
+    }
+    
+    
     
 }

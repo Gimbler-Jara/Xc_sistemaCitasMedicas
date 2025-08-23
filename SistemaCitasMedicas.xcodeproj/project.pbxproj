@@ -6,8 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		7D4D081F0B29C1E92AB64BEE /* Pods_SistemaCitasMedicas.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA3E93F522EC128451759414 /* Pods_SistemaCitasMedicas.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		9AEBE42EBAB3DA84B935DDC1 /* Pods-SistemaCitasMedicas.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SistemaCitasMedicas.debug.xcconfig"; path = "Target Support Files/Pods-SistemaCitasMedicas/Pods-SistemaCitasMedicas.debug.xcconfig"; sourceTree = "<group>"; };
+		B6C28ECA3CC1D996251E238E /* Pods-SistemaCitasMedicas.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SistemaCitasMedicas.release.xcconfig"; path = "Target Support Files/Pods-SistemaCitasMedicas/Pods-SistemaCitasMedicas.release.xcconfig"; sourceTree = "<group>"; };
 		DAFFAA252E4D582900747F20 /* SistemaCitasMedicas.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SistemaCitasMedicas.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA3E93F522EC128451759414 /* Pods_SistemaCitasMedicas.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SistemaCitasMedicas.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -36,17 +43,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D4D081F0B29C1E92AB64BEE /* Pods_SistemaCitasMedicas.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D48A905FF432ADF3F0F6FF42 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FA3E93F522EC128451759414 /* Pods_SistemaCitasMedicas.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		DAFFAA1C2E4D582900747F20 = {
 			isa = PBXGroup;
 			children = (
 				DAFFAA272E4D582900747F20 /* SistemaCitasMedicas */,
 				DAFFAA262E4D582900747F20 /* Products */,
+				FE2626CF9A7FA3593924E0E2 /* Pods */,
+				D48A905FF432ADF3F0F6FF42 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,6 +76,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		FE2626CF9A7FA3593924E0E2 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9AEBE42EBAB3DA84B935DDC1 /* Pods-SistemaCitasMedicas.debug.xcconfig */,
+				B6C28ECA3CC1D996251E238E /* Pods-SistemaCitasMedicas.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -65,9 +92,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DAFFAA3B2E4D582A00747F20 /* Build configuration list for PBXNativeTarget "SistemaCitasMedicas" */;
 			buildPhases = (
+				972AE38E4AA9A733A61AFE27 /* [CP] Check Pods Manifest.lock */,
 				DAFFAA212E4D582900747F20 /* Sources */,
 				DAFFAA222E4D582900747F20 /* Frameworks */,
 				DAFFAA232E4D582900747F20 /* Resources */,
+				DCEF7D6D430276C2BAC98ECA /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -77,8 +106,6 @@
 				DAFFAA272E4D582900747F20 /* SistemaCitasMedicas */,
 			);
 			name = SistemaCitasMedicas;
-			packageProductDependencies = (
-			);
 			productName = SistemaCitasMedicas;
 			productReference = DAFFAA252E4D582900747F20 /* SistemaCitasMedicas.app */;
 			productType = "com.apple.product-type.application";
@@ -127,6 +154,52 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		972AE38E4AA9A733A61AFE27 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SistemaCitasMedicas-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DCEF7D6D430276C2BAC98ECA /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SistemaCitasMedicas/Pods-SistemaCitasMedicas-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SistemaCitasMedicas/Pods-SistemaCitasMedicas-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SistemaCitasMedicas/Pods-SistemaCitasMedicas-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		DAFFAA212E4D582900747F20 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -140,12 +213,14 @@
 /* Begin XCBuildConfiguration section */
 		DAFFAA3C2E4D582A00747F20 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9AEBE42EBAB3DA84B935DDC1 /* Pods-SistemaCitasMedicas.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 36J8Q6HR38;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SistemaCitasMedicas/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -168,12 +243,14 @@
 		};
 		DAFFAA3D2E4D582A00747F20 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B6C28ECA3CC1D996251E238E /* Pods-SistemaCitasMedicas.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 36J8Q6HR38;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SistemaCitasMedicas/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
