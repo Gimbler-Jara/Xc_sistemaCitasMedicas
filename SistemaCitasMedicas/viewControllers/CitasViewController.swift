@@ -104,7 +104,7 @@ class CitasViewController: UIViewController,UITableViewDataSource, UITableViewDe
             message: "Para cancelar una cita, selecciona la fila correspondiente.",
             preferredStyle: .alert
         )
-        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil)) // .default en lugar de .destructive
+        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(ac, animated: true)
     }
     
